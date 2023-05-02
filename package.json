@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "UI for making a CVG",
   "dependencies": {
-    "vis": "^4.21.0-EOL",
     "vis-network": "^9.1.4"
   },
   "devDependencies": {
+    "css-loader": "^6.7.3",
+    "style-loader": "^3.3.2",
     "webpack": "^5.78.0",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^5.0.2"
   },
   "scripts": {
     "build": "webpack"

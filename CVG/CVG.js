@@ -1,7 +1,8 @@
-import { Network } from 'vis-network';
+import { Network } from 'vis-network/esnext';
+import { DataSet } from 'vis-data/esnext';
+import 'vis-network/styles/vis-network.css';
 
-var nodes, edges, network, selected_edge_id, selected_node_id;
-var node_index = 0;
+var nodes, edges, network, selected_edge_id, selected_node_id, sol_edges;
 var edge_index = 0;
 var node_selected = false;
 var edge_selected = false;
@@ -37,8 +38,8 @@ function giveMessageToUser(msg) {
 
 function editNode2() {
   try {
-    node_id = selected_node_id;
-    node = nodes.get(node_id);
+    let node_id = selected_node_id;
+    let node = nodes.get(node_id);
     nodes.remove({ id: node_id });
     nodes.add({
       id: node_id,
@@ -49,11 +50,11 @@ function editNode2() {
   }
 }
 function removeNode() {
-  edge_ids = edges.getIds()
+  let edge_ids = edges.getIds()
   try {
     for (let i = 0; i < edge_ids.length; i++) {
-      edge_id = edge_ids[i];
-      edge = edges.get(edge_id);
+      let edge_id = edge_ids[i];
+      let edge = edges.get(edge_id);
       if (edge.to === selected_node_id || edge.from === selected_node_id) {
         edges.remove({ id: edge_id });
         sol_edges.remove({ id: edge_id });
@@ -67,8 +68,8 @@ function removeNode() {
 
 function addSol_Edge(data) {
   var bool = doesTheUserWantDashedEdges;
-  to = nodes.get(data.to).label;
-  from = nodes.get(data.from).label;
+  let to = nodes.get(data.to).label;
+  let from = nodes.get(data.from).label;
   try {
     sol_edges.add({
       id: data.id,
@@ -343,6 +344,7 @@ function registerEventListeners() {
   document.getElementById("btn-addNode").onclick = addNode;
   document.getElementById("btn-addSolidEdge").onclick = addSolidEdge;
   document.getElementById("btn-addDashedEdge").onclick = addDashedEdge;
+  document.getElementById("btn-copy").onclick = copySolution;
 
   // Maps a keyboard shortcut key to a function to execute
   const keyboardShortcutToFunction = new Map;
@@ -375,7 +377,7 @@ function fillInstructionListing() {
 
 function createVisJS() {
   // create an array with nodes
-  nodes = new vis.DataSet();
+  nodes = new DataSet();
   nodes.on("*", function () {
     document.getElementById("nodes").innerText = JSON.stringify(
       nodes.get(),
@@ -385,7 +387,7 @@ function createVisJS() {
   });
 
   // create an array with edges
-  sol_edges = new vis.DataSet();
+  sol_edges = new DataSet();
   sol_edges.on("*", function () {
     document.getElementById("sol_edges").innerText = JSON.stringify(
       sol_edges.get(),
@@ -394,7 +396,7 @@ function createVisJS() {
     );
   });
 
-  edges = new vis.DataSet();
+  edges = new DataSet();
   edges.on("*", function () {
     document.getElementById("edges").innerText = JSON.stringify(
       edges.get(),
@@ -438,7 +440,7 @@ function createVisJS() {
       },
     },
   };
-  network = new vis.Network(container, data, options);
+  network = new Network(container, data, options);
   network.on("click", function () {
     if (editing === true) {
       console.log("hey")
@@ -456,3 +458,5 @@ function init() {
   createVisJS();
   initDemoGraph();
 }
+
+init();
