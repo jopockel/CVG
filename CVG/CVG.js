@@ -3,6 +3,7 @@ import { DataSet } from 'vis-data/esnext';
 import 'vis-network/styles/vis-network.css';
 
 var nodes, edges, network, selected_edge_id, selected_node_id, sol_edges;
+var node_index = 0;
 var edge_index = 0;
 var node_selected = false;
 var edge_selected = false;
@@ -257,26 +258,32 @@ function copySolution() {
   let solutionEdges = []
   const copyNodes = nodes.get()
   const copyEdges = sol_edges.get()
+  var data = {
+    nodes : [],
+    edges : []
+  }
 
   for (let i = 0; i < copyNodes.length; i++) {
-    solutionNodes.push(copyNodes[i].label);
+    data.nodes.push(copyNodes[i].label.replace(/\n|\r/g, ""))
   }
-  solutionNodes = solutionNodes.filter(function (i) {
-    if (i != null || i != false)
-      return i;
-  }).join("|");
 
   for (let i = 0; i < copyEdges.length; i++) {
-    solutionEdges.push(copyEdges[i].from + "-" + copyEdges[i].to);
+    
+    delete copyEdges[i]["id"]
+    copyEdges[i].from =copyEdges[i].from.replace(/\n|\r/g, "")
+    copyEdges[i].to =copyEdges[i].to.replace(/\n|\r/g, "")
+    data.edges.push(copyEdges[i])
   }
-  solutionEdges = solutionEdges.filter(function (i) {
-    if (i != null || i != false)
-      return i;
-  }).join("|");
+  soledges = toJSON(copyEdges)
+//   solutionEdges = solutionEdges.filter(function (i) {
+//     if (i != null || i != false)
+//       return i;
+//   }).join("|");
 
-  solution = "Nodes: [" + solutionNodes.toString() + "]\nEdges: [" + solutionEdges + "]"
-  console.log(solution)
-  navigator.clipboard.writeText(solution)
+//   solution = "Nodes: [" + solutionNodes.toString() + "]\nEdges: [" + solutionEdges + "]"
+  
+  console.log(toJSON(data))
+  navigator.clipboard.writeText(toJSON(data))
 }
 
 /*
@@ -314,23 +321,17 @@ function initDemoGraph() {
 // Example code taken from https://github.com/wodsaegh/vop-dodona/blob/master/exercise/narayana/solution/correctx86-32-intel.s
 // In the future this should come from Dodona
 const code =
-  `narayana:
-mov edi, dword ptr [esp+4]
-mov eax, 0
-call narayana_hulp
-ret
-narayana_hulp:
-cmp edi, 2
-jg  L4
-inc eax
-ret
-L4:
-dec edi
-call narayana_hulp
-sub edi, 2
-call narayana_hulp
-add edi, 3
-ret`;
+  `abs: push edx
+  mov edx, eax
+  cmp edx
+  jns pos
+  neg edx
+  pos: mov eax, edx
+  pop edx
+  ret
+  main: mov eax, 2
+  call abs
+  mov r, eax`;
 
 /*
  * =================================================
@@ -344,7 +345,6 @@ function registerEventListeners() {
   document.getElementById("btn-addNode").onclick = addNode;
   document.getElementById("btn-addSolidEdge").onclick = addSolidEdge;
   document.getElementById("btn-addDashedEdge").onclick = addDashedEdge;
-  document.getElementById("btn-copy").onclick = copySolution;
 
   // Maps a keyboard shortcut key to a function to execute
   const keyboardShortcutToFunction = new Map;
@@ -424,6 +424,15 @@ function createVisJS() {
     manipulation: {
       enabled: false,
       addEdge: function (data, callback) {
+        edge_ids = edges.getIds()
+        from = data.from;
+        to = data.to;
+        for(var i = 0;i<edges.length;i++){
+            if (from === edges.get(edge_ids[i]).from && to === edges.get(edge_ids[i]).to){
+                giveMessageToUser("Er bestaat al een pijl")
+                return;
+            }
+        }
         data['dashes'] = doesTheUserWantDashedEdges;
         data["id"] = edge_index+=1
         addSol_Edge(data)
@@ -443,7 +452,6 @@ function createVisJS() {
   network = new Network(container, data, options);
   network.on("click", function () {
     if (editing === true) {
-      console.log("hey")
       document.getElementById("edgetext").style.display = "none"    //ignore this currently
       network.disableEditMode()
       editing = false;
