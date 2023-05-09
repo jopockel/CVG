@@ -467,4 +467,4 @@ function init() {
   initDemoGraph();
 }
 
-init();
+export { init };
