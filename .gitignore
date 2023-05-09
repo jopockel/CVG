@@ -1,2 +1,3 @@
-CVG/*_dist*
+dist/*.js
+dist/*.txt
 node_modules

@@ -2,14 +2,16 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        'index_dist': './CVG/index.js',
-        'CVG_dist': './CVG/CVG.js',
+        'index': './CVG/index.js',
+        'CVG': './CVG/CVG.js',
     },
     output: {
-        path: path.resolve(__dirname, 'CVG'),
+        path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
-        library: 'cvg',
-        libraryTarget: 'var',
+        library: {
+            name: 'cvg',
+            type: 'umd',
+        },
     },
     module: {
         rules: [
@@ -19,5 +21,6 @@ module.exports = {
             },
         ],
     },
-    mode: 'production'
+    mode: 'production',
+    target: 'web',
 };

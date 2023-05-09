@@ -13,5 +13,6 @@
   },
   "scripts": {
     "build": "webpack"
-  }
+  },
+  "main": "./dist/CVG.js"
 }
