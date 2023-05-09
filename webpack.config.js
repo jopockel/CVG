@@ -1,18 +1,21 @@
 const path = require('path');
 
 module.exports = {
-    entry: './CVG/CVG.js',
+    entry: {
+        'index_dist': './CVG/index.js',
+        'CVG_dist': './CVG/CVG.js',
+    },
     output: {
         path: path.resolve(__dirname, 'CVG'),
-        filename: 'bundled_CVG.js',
+        filename: '[name].js',
         library: 'cvg',
         libraryTarget: 'var',
     },
     module: {
         rules: [
             {
-            test: /\.css$/i,
-            use: ["style-loader", "css-loader"],
+                test: /\.css$/i,
+                use: ["style-loader", "css-loader"],
             },
         ],
     },
