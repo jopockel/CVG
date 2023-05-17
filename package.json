@@ -1,6 +1,6 @@
 {
   "name": "cvg",
-  "version": "1.0.0",
+  "version": "1.1.5",
   "description": "UI for making a CVG",
   "dependencies": {
     "vis-network": "^9.1.4"

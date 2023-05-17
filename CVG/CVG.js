@@ -315,7 +315,7 @@ function initDemoGraph() {
 
 // Example code taken from https://github.com/wodsaegh/vop-dodona/blob/master/exercise/narayana/solution/correctx86-32-intel.s
 // In the future this should come from Dodona
-const code = `narayana: movl	4(%esp), %edi
+let code /*= `narayana: movl	4(%esp), %edi
 movl	$0, %eax
 call	narayana_hulp
 ret
@@ -328,7 +328,7 @@ call	narayana_hulp
 subl	$2, %edi
 call	narayana_hulp
 addl	$3, %edi
-ret`;
+ret`*/;
 
 /*
  * =================================================
@@ -362,14 +362,14 @@ function registerEventListeners() {
 function fillInstructionListing() {
     const fragment = document.createDocumentFragment();
     var inst_index = 0;
-    for (const line of code.split("\n")) {
+    for (var line of code.split("\n")) {
         const option = document.createElement("option");
         option.innerText = line;
         option.id = inst_index;
         fragment.appendChild(option);
         inst_index += 1;
     }
-
+    document.getElementById("instruction-listing").innerHTML = "";
     document.getElementById("instruction-listing").appendChild(fragment);
 }
 
@@ -461,7 +461,11 @@ function init() {
     registerEventListeners();
     fillInstructionListing();
     createVisJS();
-    initDemoGraph();
+    //initDemoGraph();
 }
 
-export { init };
+function set_code(code_from_dodona){
+    code = code_from_dodona;
+}
+
+export { init, set_code };
