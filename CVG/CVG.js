@@ -269,6 +269,7 @@ function copySolution() {
 
     console.log(toJSON(data));
     navigator.clipboard.writeText(toJSON(data));
+    return toJSON(data);
 }
 
 /*
@@ -468,4 +469,8 @@ function set_code(code_from_dodona){
     code = code_from_dodona;
 }
 
-export { init, set_code };
+function get_code(){
+    return code;
+}
+
+export { init, set_code, copySolution, get_code };
